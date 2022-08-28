@@ -1,0 +1,5 @@
+amqp.broker:
+  host: localhost
+
+app.receipt.source:
+  file: /samples.json
