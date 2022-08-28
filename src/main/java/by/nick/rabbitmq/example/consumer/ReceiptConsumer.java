@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 import static by.nick.rabbitmq.example.configuration.BrokerConstants.*;
 
@@ -28,12 +28,24 @@ public class ReceiptConsumer {
     @PostConstruct
     public void startPolling() throws IOException {
         Connection connection = connectionProvider.getConnection(this);
-        Channel channel1 = connection.createChannel();
-        channel1.basicConsume(MAIN_RECEIPT_QUEUE_1, true, this::consumeFromMainQueue, consumerTag -> {});
+        ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1);
+        executorService.scheduleWithFixedDelay(() -> {
+            try {
+                log.info("Start listening main queues");
+                Channel channel1 = connection.createChannel();
+                channel1.basicConsume(MAIN_RECEIPT_QUEUE_1, true, this::consumeFromMainQueue, consumerTag -> {});
+                Channel channel2 = connection.createChannel();
+                channel2.basicConsume(MAIN_RECEIPT_QUEUE_2, true, this::consumeFromMainQueue, consumerTag -> {});
 
-        Channel channel2 = connection.createChannel();
-        channel2.basicConsume(MAIN_RECEIPT_QUEUE_2, true, this::consumeFromMainQueue, consumerTag -> {
-        });
+                TimeUnit.SECONDS.sleep(5);
+                channel1.close();
+                channel2.close();
+
+            } catch (IOException | InterruptedException | TimeoutException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(e);
+            }
+        }, 0, 10, TimeUnit.SECONDS);
     }
 
     public void consumeFromMainQueue(String tag, Delivery delivery) throws IOException {

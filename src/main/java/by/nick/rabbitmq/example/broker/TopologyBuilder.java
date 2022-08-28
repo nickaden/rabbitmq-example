@@ -26,9 +26,16 @@ public class TopologyBuilder {
              Channel channel = connection.createChannel()) {
 
             //Main flow
+            Map<String, Object> mainQueueArgs = Map.of(
+                    "x-message-ttl", 5000,
+                    "x-max-length", 5,
+                    "x-dead-letter-exchange", RECEIPT_OVERFLOW_EXCHANGE,
+                    "x-dead-letter-routing-key", RECEIPT_OVERFLOW_ROUTE_KEY,
+                    "x-overflow", "reject-publish-dlx"
+            );
             channel.exchangeDeclare(RECEIPT_EXCHANGE, BuiltinExchangeType.DIRECT);
-            channel.queueDeclare(MAIN_RECEIPT_QUEUE_1, false, false, false, null);
-            channel.queueDeclare(MAIN_RECEIPT_QUEUE_2, false, false, false, null);
+            channel.queueDeclare(MAIN_RECEIPT_QUEUE_1, false, false, false, mainQueueArgs);
+            channel.queueDeclare(MAIN_RECEIPT_QUEUE_2, false, false, false, mainQueueArgs);
             channel.queueBind(MAIN_RECEIPT_QUEUE_1, RECEIPT_EXCHANGE, MAIN_RECEIPT_ROUTE_KEY_1);
             channel.queueBind(MAIN_RECEIPT_QUEUE_2, RECEIPT_EXCHANGE, MAIN_RECEIPT_ROUTE_KEY_2);
             //Recovery flow
@@ -45,6 +52,11 @@ public class TopologyBuilder {
             );
             channel.queueDeclare(RECEIPT_RETRY_QUEUE, false, false, false, retryQueueArgs);
             channel.queueBind(RECEIPT_RETRY_QUEUE, RECEIPT_RETRY_EXCHANGE, RECEIPT_RETRY_ROUTE_KEY);
+
+            //Queue overflow recovery
+            channel.exchangeDeclare(RECEIPT_OVERFLOW_EXCHANGE, BuiltinExchangeType.DIRECT);
+            channel.queueDeclare(RECEIPT_OVERFLOW_QUEUE, false, false, false, null);
+            channel.queueBind(RECEIPT_OVERFLOW_QUEUE, RECEIPT_OVERFLOW_EXCHANGE, RECEIPT_OVERFLOW_ROUTE_KEY);
 
         } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);

@@ -20,4 +20,8 @@ public class BrokerConstants {
     public static final String RECEIPT_RETRY_EXCHANGE = "receipt-exchange-retry";
     public static final String RECEIPT_RETRY_QUEUE = "receipt-queue-retry";
     public static final String RECEIPT_RETRY_ROUTE_KEY = "receipt-retry";
+
+    public static final String RECEIPT_OVERFLOW_EXCHANGE = "queue-overflow-exchange";
+    public static final String RECEIPT_OVERFLOW_QUEUE = "queue-overflow-queue";
+    public static final String RECEIPT_OVERFLOW_ROUTE_KEY = "queue-overflow";
 }

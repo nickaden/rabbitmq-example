@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @Component
@@ -17,7 +16,7 @@ public class ReceiptProduceScheduler {
     private final JsonReceiptSource receiptSource;
     private final ReceiptProducer producer;
 
-    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedDelay = 500)
     public void scheduledSend() {
         receiptSource.getReceipt().ifPresentOrElse(receipt -> {
             try {
