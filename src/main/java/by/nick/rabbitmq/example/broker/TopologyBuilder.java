@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import static by.nick.rabbitmq.example.configuration.BrokerConstants.*;
@@ -38,9 +39,9 @@ public class TopologyBuilder {
             //Retry flow
             channel.exchangeDeclare(RECEIPT_RETRY_EXCHANGE, BuiltinExchangeType.DIRECT);
             Map<String, Object> retryQueueArgs = Map.of(
-                    "x-message-ttl", 10000,
+                    "x-message-ttl", 5000,
                     "x-dead-letter-exchange", RECEIPT_EXCHANGE,
-                    "x-dead-letter-routing-key", MAIN_RECEIPT_ROUTE_KEY
+                    "x-dead-letter-routing-key", MAIN_RECEIPT_ROUTE_KEY_1
             );
             channel.queueDeclare(RECEIPT_RETRY_QUEUE, false, false, false, retryQueueArgs);
             channel.queueBind(RECEIPT_RETRY_QUEUE, RECEIPT_RETRY_EXCHANGE, RECEIPT_RETRY_ROUTE_KEY);

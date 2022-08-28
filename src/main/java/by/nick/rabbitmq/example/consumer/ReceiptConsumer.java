@@ -15,8 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
-import static by.nick.rabbitmq.example.configuration.BrokerConstants.MAIN_RECEIPT_QUEUE_1;
-import static by.nick.rabbitmq.example.configuration.BrokerConstants.MAIN_RECEIPT_QUEUE_2;
+import static by.nick.rabbitmq.example.configuration.BrokerConstants.*;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +24,6 @@ public class ReceiptConsumer {
 
     private final ConnectionProvider connectionProvider;
     private final ObjectMapper objectMapper;
-    private final ReceiptHandler receiptHandler;
 
     @PostConstruct
     public void startPolling() throws IOException {
