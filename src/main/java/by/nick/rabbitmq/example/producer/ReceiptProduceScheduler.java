@@ -17,7 +17,7 @@ public class ReceiptProduceScheduler {
     private final JsonReceiptSource receiptSource;
     private final ReceiptProducer producer;
 
-    @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.SECONDS)
     public void scheduledSend() {
         receiptSource.getReceipt().ifPresentOrElse(receipt -> {
             try {

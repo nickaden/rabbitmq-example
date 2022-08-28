@@ -15,7 +15,8 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static by.nick.rabbitmq.example.configuration.BrokerConstants.MAIN_RECEIPT_QUEUE;
+import static by.nick.rabbitmq.example.configuration.BrokerConstants.MAIN_RECEIPT_QUEUE_1;
+import static by.nick.rabbitmq.example.configuration.BrokerConstants.MAIN_RECEIPT_QUEUE_2;
 
 @Component
 @RequiredArgsConstructor
@@ -29,8 +30,11 @@ public class ReceiptConsumer {
     @PostConstruct
     public void startPolling() throws IOException {
         Connection connection = connectionProvider.getConnection(this);
-        Channel channel = connection.createChannel();
-        channel.basicConsume(MAIN_RECEIPT_QUEUE, true, this::consumeFromMainQueue, consumerTag -> {});
+        Channel channel1 = connection.createChannel();
+        channel1.basicConsume(MAIN_RECEIPT_QUEUE_1, true, this::consumeFromMainQueue, consumerTag -> {});
+
+        Channel channel2 = connection.createChannel();
+        channel2.basicConsume(MAIN_RECEIPT_QUEUE_2, true, this::consumeFromMainQueue, consumerTag -> {});
     }
 
 

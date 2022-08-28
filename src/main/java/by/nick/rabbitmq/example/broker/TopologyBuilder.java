@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import static by.nick.rabbitmq.example.configuration.BrokerConstants.*;
@@ -27,9 +26,10 @@ public class TopologyBuilder {
 
             //Main flow
             channel.exchangeDeclare(RECEIPT_EXCHANGE, BuiltinExchangeType.DIRECT);
-            channel.queueDeclare(MAIN_RECEIPT_QUEUE, false, false, false, null);
-            channel.queueBind(MAIN_RECEIPT_QUEUE, RECEIPT_EXCHANGE, MAIN_RECEIPT_ROUTE_KEY);
-
+            channel.queueDeclare(MAIN_RECEIPT_QUEUE_1, false, false, false, null);
+            channel.queueDeclare(MAIN_RECEIPT_QUEUE_2, false, false, false, null);
+            channel.queueBind(MAIN_RECEIPT_QUEUE_1, RECEIPT_EXCHANGE, MAIN_RECEIPT_ROUTE_KEY_1);
+            channel.queueBind(MAIN_RECEIPT_QUEUE_2, RECEIPT_EXCHANGE, MAIN_RECEIPT_ROUTE_KEY_2);
             //Recovery flow
             channel.exchangeDeclare(RECEIPT_DLX_EXCHANGE, BuiltinExchangeType.DIRECT);
             channel.queueDeclare(RECEIPT_DLX_QUEUE, false, false, false, null);
