@@ -16,4 +16,8 @@ public class BrokerConstants {
     public static final String RECEIPT_DLX_EXCHANGE = "receipt-exchange-recovery";
     public static final String RECEIPT_DLX_QUEUE = "receipt-queue-recovery";
     public static final String RECEIPT_DLX_ROUTE_KEY = "receipt-recovery";
+
+    public static final String RECEIPT_RETRY_EXCHANGE = "receipt-exchange-retry";
+    public static final String RECEIPT_RETRY_QUEUE = "receipt-queue-retry";
+    public static final String RECEIPT_RETRY_ROUTE_KEY = "receipt-retry";
 }

@@ -35,6 +35,16 @@ public class TopologyBuilder {
             channel.queueDeclare(RECEIPT_DLX_QUEUE, false, false, false, null);
             channel.queueBind(RECEIPT_DLX_QUEUE, RECEIPT_DLX_EXCHANGE, RECEIPT_DLX_ROUTE_KEY);
 
+            //Retry flow
+            channel.exchangeDeclare(RECEIPT_RETRY_EXCHANGE, BuiltinExchangeType.DIRECT);
+            Map<String, Object> retryQueueArgs = Map.of(
+                    "x-message-ttl", 10000,
+                    "x-dead-letter-exchange", RECEIPT_EXCHANGE,
+                    "x-dead-letter-routing-key", MAIN_RECEIPT_ROUTE_KEY
+            );
+            channel.queueDeclare(RECEIPT_RETRY_QUEUE, false, false, false, retryQueueArgs);
+            channel.queueBind(RECEIPT_RETRY_QUEUE, RECEIPT_RETRY_EXCHANGE, RECEIPT_RETRY_ROUTE_KEY);
+
         } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }
